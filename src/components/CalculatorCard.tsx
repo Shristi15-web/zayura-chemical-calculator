@@ -39,10 +39,12 @@ const CalculatorCard = ({
   }, [mode, concentrateRatio, waterRatio]);
 
   useEffect(() => {
-    if (mode === "ingredients" && concentrateAmount && waterAmount) {
-      calculateFromIngredients();
+    if (mode === "ingredients") {
+      if (concentrateAmount || waterAmount) {
+        calculateFromIngredients();
+      }
     }
-  }, [concentrateAmount, waterAmount, mode]);
+  }, [concentrateAmount, waterAmount, mode, concentrateRatio, waterRatio]);
 
   const calculateFromProduct = () => {
     if (!productQuantity || parseFloat(productQuantity) <= 0) {
@@ -67,22 +69,27 @@ const CalculatorCard = ({
   };
 
   const calculateFromIngredients = () => {
-    if (
-      !concentrateAmount ||
-      !waterAmount ||
-      parseFloat(concentrateAmount) <= 0 ||
-      parseFloat(waterAmount) <= 0
-    ) {
-      toast({
-        title: "Invalid Input",
-        description: "Please enter valid concentrate and water amounts",
-        variant: "destructive",
-      });
-      return;
+    let concentrate = 0;
+    let water = 0;
+    
+    // If concentrate is entered, calculate water based on default ratio
+    if (concentrateAmount && parseFloat(concentrateAmount) > 0) {
+      concentrate = parseFloat(concentrateAmount);
+      // If water is also entered, use it; otherwise calculate from ratio
+      if (waterAmount && parseFloat(waterAmount) > 0) {
+        water = parseFloat(waterAmount);
+      } else {
+        water = (concentrate * waterRatio) / concentrateRatio;
+      }
+    } 
+    // If only water is entered, calculate concentrate based on default ratio
+    else if (waterAmount && parseFloat(waterAmount) > 0) {
+      water = parseFloat(waterAmount);
+      concentrate = (water * concentrateRatio) / waterRatio;
+    } else {
+      return; // No valid input
     }
 
-    const concentrate = parseFloat(concentrateAmount);
-    const water = parseFloat(waterAmount);
     const total = concentrate + water;
     const ratio = `1:${(water / concentrate).toFixed(1)}`;
 
@@ -233,9 +240,15 @@ const CalculatorCard = ({
               <p className="text-2xl font-bold text-primary mt-1">
                 {concentrateAmount && waterAmount
                   ? `1:${(parseFloat(waterAmount) / parseFloat(concentrateAmount)).toFixed(1)}`
-                  : concentrateAmount
-                  ? "1:?"
-                  : "?:1"}
+                  : concentrateAmount && !waterAmount
+                  ? `1:${waterRatio / concentrateRatio}`
+                  : !concentrateAmount && waterAmount
+                  ? `1:${waterRatio / concentrateRatio}`
+                  : "1:?"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {concentrateAmount && !waterAmount && "Water will be calculated based on default ratio"}
+                {!concentrateAmount && waterAmount && "Concentrate will be calculated based on default ratio"}
               </p>
             </div>
           )}
