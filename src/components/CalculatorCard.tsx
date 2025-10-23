@@ -199,15 +199,6 @@ const CalculatorCard = ({
         </div>
       ) : (
         <div className="space-y-6">
-          {concentrateAmount && waterAmount && (
-            <div className="bg-muted/50 p-4 rounded-lg text-center">
-              <span className="text-sm text-muted-foreground">Current Concentration Ratio</span>
-              <p className="text-2xl font-bold text-primary mt-1">
-                1:{(parseFloat(waterAmount) / parseFloat(concentrateAmount)).toFixed(1)}
-              </p>
-            </div>
-          )}
-
           <div className="space-y-2">
             <Label htmlFor="concentrate-amount">Concentrate Amount (kg)</Label>
             <Input
@@ -235,6 +226,19 @@ const CalculatorCard = ({
               className="text-lg"
             />
           </div>
+
+          {(concentrateAmount || waterAmount) && (
+            <div className="bg-muted/50 p-4 rounded-lg text-center">
+              <span className="text-sm text-muted-foreground">Current Concentration Ratio</span>
+              <p className="text-2xl font-bold text-primary mt-1">
+                {concentrateAmount && waterAmount
+                  ? `1:${(parseFloat(waterAmount) / parseFloat(concentrateAmount)).toFixed(1)}`
+                  : concentrateAmount
+                  ? "1:?"
+                  : "?:1"}
+              </p>
+            </div>
+          )}
         </div>
       )}
 
