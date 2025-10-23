@@ -13,6 +13,7 @@ interface CalculatorCardProps {
   defaultConcentrate: number;
   defaultWater: number;
   color: string;
+  dilutionSteps: string[];
 }
 
 type CalculationMode = "product" | "ingredients";
@@ -22,6 +23,7 @@ const CalculatorCard = ({
   icon: Icon,
   defaultConcentrate,
   defaultWater,
+  dilutionSteps,
 }: CalculatorCardProps) => {
   const [mode, setMode] = useState<CalculationMode>("product");
   const [concentrateRatio, setConcentrateRatio] = useState(defaultConcentrate);
@@ -35,6 +37,12 @@ const CalculatorCard = ({
   useEffect(() => {
     setResults(null);
   }, [mode, concentrateRatio, waterRatio]);
+
+  useEffect(() => {
+    if (mode === "ingredients" && concentrateAmount && waterAmount) {
+      calculateFromIngredients();
+    }
+  }, [concentrateAmount, waterAmount, mode]);
 
   const calculateFromProduct = () => {
     if (!productQuantity || parseFloat(productQuantity) <= 0) {
@@ -125,6 +133,24 @@ const CalculatorCard = ({
 
       {mode === "product" ? (
         <div className="space-y-6">
+          {/* Dilution Process Steps */}
+          <div className="bg-gradient-to-br from-primary/5 to-secondary/5 p-6 rounded-xl border border-primary/20">
+            <h4 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <i className="fas fa-list-ol text-primary"></i>
+              Dilution Process Steps
+            </h4>
+            <ol className="space-y-2">
+              {dilutionSteps.map((step, index) => (
+                <li key={index} className="flex gap-3 text-sm text-muted-foreground">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-xs">
+                    {index + 1}
+                  </span>
+                  <span className="pt-0.5">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="concentrate-ratio">Concentrate Ratio</Label>
@@ -173,6 +199,15 @@ const CalculatorCard = ({
         </div>
       ) : (
         <div className="space-y-6">
+          {concentrateAmount && waterAmount && (
+            <div className="bg-muted/50 p-4 rounded-lg text-center">
+              <span className="text-sm text-muted-foreground">Current Concentration Ratio</span>
+              <p className="text-2xl font-bold text-primary mt-1">
+                1:{(parseFloat(waterAmount) / parseFloat(concentrateAmount)).toFixed(1)}
+              </p>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="concentrate-amount">Concentrate Amount (kg)</Label>
             <Input

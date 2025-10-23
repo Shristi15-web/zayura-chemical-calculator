@@ -9,8 +9,16 @@ const CalculatorTabs = () => {
       label: "Floor Cleaner",
       icon: Sparkles,
       defaultConcentrate: 1,
-      defaultWater: 9,
+      defaultWater: 24,
       color: "hsl(var(--primary))",
+      dilutionSteps: [
+        "Add 1 L of FCC (25*)",
+        "Add 6.25 L of water with Conc.",
+        "Mix it well for about 5-8 mins.",
+        "Add remaining 17.75 L of water to the solution.",
+        "Mix it well for 10-15 mins.",
+        "Floor Cleaner is ready."
+      ],
     },
     {
       id: "toilet",
@@ -19,14 +27,29 @@ const CalculatorTabs = () => {
       defaultConcentrate: 1,
       defaultWater: 5,
       color: "hsl(var(--info))",
+      dilutionSteps: [
+        "Add appropriate amount of TCC",
+        "Add initial water and mix for 5-8 mins.",
+        "Add remaining water to the solution.",
+        "Mix well for 10-15 mins.",
+        "Toilet Cleaner is ready."
+      ],
     },
     {
       id: "glass",
       label: "Glass Cleaner",
       icon: Sparkle,
       defaultConcentrate: 1,
-      defaultWater: 10,
+      defaultWater: 29,
       color: "hsl(var(--secondary))",
+      dilutionSteps: [
+        "Add 1 L of GCC (30*)",
+        "Add 15 L of water in the Conc.",
+        "Stir it for about 5-8 mins.",
+        "Add remaining 14 L of water in the solution.",
+        "Mix it for about 10-15 mins.",
+        "Glass Cleaner is ready."
+      ],
     },
     {
       id: "bathroom",
@@ -35,6 +58,14 @@ const CalculatorTabs = () => {
       defaultConcentrate: 1,
       defaultWater: 4,
       color: "hsl(var(--accent))",
+      dilutionSteps: [
+        "Add 1 L of BCC (5*)",
+        "Add 1 L of water in the Conc.",
+        "Mix it well for 5-8 mins.",
+        "Add the remaining 3 L of water with the solution.",
+        "Mix it well for 10-15 mins.",
+        "Bathroom Cleaner is ready."
+      ],
     },
   ];
 
@@ -74,10 +105,11 @@ const CalculatorTabs = () => {
               <CalculatorCard
                 title={calc.label}
                 icon={calc.icon}
-                defaultConcentrate={calc.defaultConcentrate}
-                defaultWater={calc.defaultWater}
-                color={calc.color}
-              />
+            defaultConcentrate={calc.defaultConcentrate}
+            defaultWater={calc.defaultWater}
+            color={calc.color}
+            dilutionSteps={calc.dilutionSteps}
+          />
             </TabsContent>
           ))}
         </Tabs>
